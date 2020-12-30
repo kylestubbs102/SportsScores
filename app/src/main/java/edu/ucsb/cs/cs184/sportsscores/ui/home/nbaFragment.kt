@@ -49,11 +49,10 @@ class nbaFragment : Fragment() {
 //        outputStreamWriter.close()
         val test = activity?.filesDir?.absolutePath
         val file = File(test + "/nba1.txt")
-        val iss = FileInputStream(file)
-        val lin = BufferedReader(InputStreamReader(iss))
-        val s = lin.readText()
-
-        val doc = Jsoup.parse(s)
+        val inputStream = FileInputStream(file)
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        val htmlString = reader.readText()
+        val doc = Jsoup.parse(htmlString)
 
         val imageElements = doc.select("img[src*=500]")
 //      val imageElements = doc.getElementsByClass("teamlogo")
