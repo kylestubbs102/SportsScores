@@ -22,10 +22,6 @@ class nbaFragment : Fragment() {
         nbaViewModel =
                 ViewModelProvider(this).get(nbaViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_nba, container, false)
-        val textView: TextView = root.findViewById(R.id.text_nba)
-        nbaViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
         return root
     }
 }
