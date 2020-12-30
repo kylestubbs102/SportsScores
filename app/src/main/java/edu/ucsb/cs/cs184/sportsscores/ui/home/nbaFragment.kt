@@ -1,6 +1,5 @@
 package edu.ucsb.cs.cs184.sportsscores.ui.home
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +12,6 @@ import com.squareup.picasso.Picasso
 import edu.ucsb.cs.cs184.sportsscores.R
 import org.jsoup.Jsoup
 import java.io.*
-import java.net.HttpURLConnection
-import java.net.URL
-import kotlin.concurrent.thread
-
 
 class nbaFragment : Fragment() {
 
@@ -55,9 +50,7 @@ class nbaFragment : Fragment() {
         val doc = Jsoup.parse(htmlString)
 
         val imageElements = doc.select("img[src*=500]")
-//      val imageElements = doc.getElementsByClass("teamlogo")
         val textElements = doc.getElementsByTag("h1")
-
         val imageUrl = imageElements[0].absUrl("src")
 
         textView.text = textElements[1].text()
