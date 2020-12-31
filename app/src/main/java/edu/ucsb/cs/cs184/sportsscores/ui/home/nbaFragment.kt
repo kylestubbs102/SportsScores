@@ -21,12 +21,9 @@ class nbaFragment : Fragment() {
 
     private lateinit var viewModel: nbaViewModel
 
-    private lateinit var imageView: ImageView
-    private lateinit var textView: TextView
-
-    var imageURLArrayList = ArrayList<String>()
-    var teamNameArrayList = ArrayList<String>()
-    var scoresArrayList = ArrayList<Int>()
+    var imageURLArrayList = ArrayList<Pair<String, String>>()
+    var teamNameArrayList = ArrayList<Pair<String, String>>()
+    var scoresArrayList = ArrayList<Pair<String, String>>()
     var timeArrayList = ArrayList<String>()
 
     override fun onCreateView(
@@ -37,8 +34,6 @@ class nbaFragment : Fragment() {
         viewModel =
                 ViewModelProvider(this).get(nbaViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_nba, container, false)
-        imageView = root.findViewById(R.id.image)
-        textView = root.findViewById(R.id.text)
         retrieveWebInfo()
         return root
     }
@@ -64,21 +59,27 @@ class nbaFragment : Fragment() {
             val teamNameElements = doc.getElementsByAttributeValueContaining("class", "teamName")
             val scoresElements = doc.getElementsByAttributeValueContaining("class", "EventCard__score--")
             val timeElements = doc.getElementsByAttributeValueContaining("class", "clockColumn")
-            for (index in 0 until imageElements.size) {
-                imageURLArrayList.add(imageElements[index].child(0).child(0).absUrl("src"))
-                teamNameArrayList.add(teamNameElements[index].text())
-                scoresArrayList.add(scoresElements[index].text().toInt())
-                if (index < imageElements.size / 2)
-                    timeArrayList.add(timeElements[index].text())
+            for (index in 0 until imageElements.size / 2) {
+                val homeTeamIndex = index * 2
+                val awayTeamIndex = index * 2 + 1
+                val homeTeamImageURL = imageElements[homeTeamIndex].child(0).child(0).absUrl("src")
+                val awayTeamImageURL = imageElements[awayTeamIndex].child(0).child(0).absUrl("src")
+                imageURLArrayList.add(Pair(homeTeamImageURL, awayTeamImageURL))
+                val homeTeamName = teamNameElements[homeTeamIndex].text()
+                val awayTeamName = teamNameElements[awayTeamIndex].text()
+                teamNameArrayList.add(Pair(homeTeamName, awayTeamName))
+                val homeTeamScore = scoresElements[homeTeamIndex].text()
+                val awayTeamScore = scoresElements[awayTeamIndex].text()
+                scoresArrayList.add(Pair(homeTeamScore, awayTeamScore))
+                timeArrayList.add(timeElements[index].text())
             } // create in ViewModel and use boolean to only initialize on startup
 
 
             activity?.runOnUiThread {
-                textView.text = teamNameArrayList[0]
-                Picasso.get().load(imageURLArrayList[0]).into(imageView)
+//                textView.text = teamNameArrayList[0]
+//                Picasso.get().load(imageURLArrayList[0]).into(imageView)
             }
 
-            //work on loading teamnames and logos, also work on recyclerview
         }
 }
 
