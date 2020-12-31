@@ -9,7 +9,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import edu.ucsb.cs.cs184.sportsscores.GameAdapter
 import edu.ucsb.cs.cs184.sportsscores.R
 import org.jsoup.Jsoup
 import java.io.*
@@ -26,6 +29,10 @@ class nbaFragment : Fragment() {
     var scoresArrayList = ArrayList<Pair<String, String>>()
     var timeArrayList = ArrayList<String>()
 
+    private lateinit var gameAdapter: GameAdapter
+    private lateinit var listRecyclerView: RecyclerView
+    private lateinit var linearLayoutManager: LinearLayoutManager
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -34,7 +41,13 @@ class nbaFragment : Fragment() {
         viewModel =
                 ViewModelProvider(this).get(nbaViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_nba, container, false)
+
+        listRecyclerView = root.findViewById(R.id.listRecyclerView)
+        linearLayoutManager = LinearLayoutManager(context)
+        listRecyclerView.layoutManager = linearLayoutManager
+
         retrieveWebInfo()
+
         return root
     }
 
@@ -85,6 +98,7 @@ class nbaFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        //gameAdapter = GameAdapter(games)
+        //change to viewModel later
     }
-    // might not need
 }

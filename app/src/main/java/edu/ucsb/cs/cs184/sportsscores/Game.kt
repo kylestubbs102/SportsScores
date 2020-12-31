@@ -1,5 +1,7 @@
 package edu.ucsb.cs.cs184.sportsscores
 
-class Game(logoURLs: Pair<String, String>, teams: Pair<String, String>, scores: Pair<Int, Int>, time: String) {
-
+class Game(val logoURLs: Pair<String, String>,
+           val teams: Pair<String, String>,
+           val scores: Pair<String, String>,
+           val time: String) {
 }
