@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import edu.ucsb.cs.cs184.sportsscores.Game
 import edu.ucsb.cs.cs184.sportsscores.GameAdapter
 import edu.ucsb.cs.cs184.sportsscores.R
 import org.jsoup.Jsoup
@@ -24,10 +25,10 @@ class nbaFragment : Fragment() {
 
     private lateinit var viewModel: nbaViewModel
 
-    var imageURLArrayList = ArrayList<Pair<String, String>>()
-    var teamNameArrayList = ArrayList<Pair<String, String>>()
-    var scoresArrayList = ArrayList<Pair<String, String>>()
-    var timeArrayList = ArrayList<String>()
+//    var imageURLArrayList = ArrayList<Pair<String, String>>()
+//    var teamNameArrayList = ArrayList<Pair<String, String>>()
+//    var scoresArrayList = ArrayList<Pair<String, String>>()
+//    var timeArrayList = ArrayList<String>()
 
     private lateinit var gameAdapter: GameAdapter
     private lateinit var listRecyclerView: RecyclerView
@@ -43,8 +44,6 @@ class nbaFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_nba, container, false)
 
         listRecyclerView = root.findViewById(R.id.listRecyclerView)
-        linearLayoutManager = LinearLayoutManager(context)
-        listRecyclerView.layoutManager = linearLayoutManager
 
         retrieveWebInfo()
 
@@ -52,7 +51,7 @@ class nbaFragment : Fragment() {
     }
 
     private fun retrieveWebInfo() {
-        thread {
+        //thread {
 //            val url = URL("https://www.thescore.com/nba/events/date/2020-12-29")
 //            val con = url.openConnection() as HttpURLConnection
 //            val datas = con.inputStream.bufferedReader().readText()
@@ -77,28 +76,37 @@ class nbaFragment : Fragment() {
                 val awayTeamIndex = index * 2 + 1
                 val homeTeamImageURL = imageElements[homeTeamIndex].child(0).child(0).absUrl("src")
                 val awayTeamImageURL = imageElements[awayTeamIndex].child(0).child(0).absUrl("src")
-                imageURLArrayList.add(Pair(homeTeamImageURL, awayTeamImageURL))
+                val imageURLPair = Pair(homeTeamImageURL, awayTeamImageURL)
+//                imageURLArrayList.add(Pair(homeTeamImageURL, awayTeamImageURL))
                 val homeTeamName = teamNameElements[homeTeamIndex].text()
                 val awayTeamName = teamNameElements[awayTeamIndex].text()
-                teamNameArrayList.add(Pair(homeTeamName, awayTeamName))
+                val teamNamePair = Pair(homeTeamName, awayTeamName)
+//                teamNameArrayList.add(Pair(homeTeamName, awayTeamName))
                 val homeTeamScore = scoresElements[homeTeamIndex].text()
                 val awayTeamScore = scoresElements[awayTeamIndex].text()
-                scoresArrayList.add(Pair(homeTeamScore, awayTeamScore))
-                timeArrayList.add(timeElements[index].text())
+                val teamScorePair = Pair(homeTeamScore, awayTeamScore)
+//                scoresArrayList.add(Pair(homeTeamScore, awayTeamScore))
+                val time = timeElements[index].text()
+//                timeArrayList.add(timeElements[index].text())
+                val game = Game(imageURLPair, teamNamePair, teamScorePair, time)
+                viewModel.addGame(game)
             } // create in ViewModel and use boolean to only initialize on startup
 
 
-            activity?.runOnUiThread {
+            //activity?.runOnUiThread {
 //                textView.text = teamNameArrayList[0]
 //                Picasso.get().load(imageURLArrayList[0]).into(imageView)
-            }
+            //}
 
-        }
+        //}
 }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //gameAdapter = GameAdapter(games)
-        //change to viewModel later
+        linearLayoutManager = LinearLayoutManager(context)
+        listRecyclerView.layoutManager = linearLayoutManager
+        gameAdapter = GameAdapter(viewModel.getGames()!!)
+        listRecyclerView.setAdapter(gameAdapter)
+        listRecyclerView.setHasFixedSize(true)
     }
 }

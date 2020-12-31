@@ -1,5 +1,6 @@
 package edu.ucsb.cs.cs184.sportsscores
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
-class GameAdapter(private val games: ArrayList<Game>) : RecyclerView.Adapter<GameAdapter.ViewHolder>() {
+class GameAdapter(private var games: ArrayList<Game>) : RecyclerView.Adapter<GameAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
@@ -53,8 +54,8 @@ class GameAdapter(private val games: ArrayList<Game>) : RecyclerView.Adapter<Gam
     }
 
     private fun setNames(holder: ViewHolder, position: Int) {
-        holder.homeTeamName.text = games[position].teams.first
-        holder.awayTeamName.text = games[position].teams.second
+        holder.homeTeamName.text = games[position].names.first
+        holder.awayTeamName.text = games[position].names.second
     }
 
     private fun setScores(holder: ViewHolder, position: Int) {
