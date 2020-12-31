@@ -26,6 +26,8 @@ class nbaFragment : Fragment() {
 
     var imageURLArrayList = ArrayList<String>()
     var teamNameArrayList = ArrayList<String>()
+    var scoresArrayList = ArrayList<Int>()
+    var timeArrayList = ArrayList<String>()
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -60,9 +62,14 @@ class nbaFragment : Fragment() {
             //val imageElements = doc.select("a[name$=nba:scoreboard:team]")
             val imageElements = doc.getElementsByAttributeValueContaining("class", "teamLogo")
             val teamNameElements = doc.getElementsByAttributeValueContaining("class", "teamName")
+            val scoresElements = doc.getElementsByAttributeValueContaining("class", "EventCard__score--")
+            val timeElements = doc.getElementsByAttributeValueContaining("class", "clockColumn")
             for (index in 0 until imageElements.size) {
                 imageURLArrayList.add(imageElements[index].child(0).child(0).absUrl("src"))
                 teamNameArrayList.add(teamNameElements[index].text())
+                scoresArrayList.add(scoresElements[index].text().toInt())
+                if (index < imageElements.size / 2)
+                    timeArrayList.add(timeElements[index].text())
             } // create in ViewModel and use boolean to only initialize on startup
 
 
