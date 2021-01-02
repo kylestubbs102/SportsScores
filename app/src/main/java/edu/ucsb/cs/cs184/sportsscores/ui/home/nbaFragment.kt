@@ -45,13 +45,11 @@ class nbaFragment : Fragment() {
 
         listRecyclerView = root.findViewById(R.id.listRecyclerView)
 
-        retrieveWebInfo()
-
         return root
     }
 
     private fun retrieveWebInfo() {
-        //thread {
+        thread {
 //            val url = URL("https://www.thescore.com/nba/events/date/2020-12-29")
 //            val con = url.openConnection() as HttpURLConnection
 //            val datas = con.inputStream.bufferedReader().readText()
@@ -59,12 +57,13 @@ class nbaFragment : Fragment() {
 //            val outputStreamWriter = OutputStreamWriter(requireContext().openFileOutput("nba4.txt", Context.MODE_APPEND))
 //            outputStreamWriter.write(datas)
 //            outputStreamWriter.close()
-            val test = activity?.filesDir?.absolutePath
-            val file = File(test + "/nba4.txt")
-            val inputStream = FileInputStream(file)
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val htmlString = reader.readText()
-            val doc = Jsoup.parse(htmlString)
+//            val test = activity?.filesDir?.absolutePath
+//            val file = File(test + "/nba4.txt")
+//            val inputStream = FileInputStream(file)
+//            val reader = BufferedReader(InputStreamReader(inputStream))
+//            val htmlString = reader.readText()
+            //val doc = Jsoup.parse(htmlString)
+            val doc = Jsoup.connect("https://www.thescore.com/nba/events/date/2020-12-29").get()
 
             //val imageElements = doc.select("a[name$=nba:scoreboard:team]")
             val imageElements = doc.getElementsByAttributeValueContaining("class", "teamLogo")
@@ -92,21 +91,28 @@ class nbaFragment : Fragment() {
                 viewModel.addGame(game)
             } // create in ViewModel and use boolean to only initialize on startup
 
+            activity?.runOnUiThread {
+                gameAdapter = GameAdapter(requireContext(), viewModel.getGames()!!)
+                linearLayoutManager = LinearLayoutManager(context)
+                //add gridlayout here too when created
 
-            //activity?.runOnUiThread {
+                listRecyclerView.layoutManager = linearLayoutManager
+                listRecyclerView.adapter = gameAdapter
+                listRecyclerView.setHasFixedSize(true)
 //                textView.text = teamNameArrayList[0]
 //                Picasso.get().load(imageURLArrayList[0]).into(imageView)
-            //}
+            }
 
-        //}
+        }
 }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        linearLayoutManager = LinearLayoutManager(context)
-        listRecyclerView.layoutManager = linearLayoutManager
-        gameAdapter = GameAdapter(viewModel.getGames()!!)
-        listRecyclerView.setAdapter(gameAdapter)
-        listRecyclerView.setHasFixedSize(true)
+        retrieveWebInfo()
+        //linearLayoutManager = LinearLayoutManager(context)
+        //listRecyclerView.layoutManager = linearLayoutManager
+        //gameAdapter = GameAdapter(requireContext(), viewModel.getGames()!!)
+        //listRecyclerView.adapter = gameAdapter
+//        listRecyclerView.setHasFixedSize(true)
     }
 }

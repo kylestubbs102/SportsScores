@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
-class GameAdapter(private var games: ArrayList<Game>) : RecyclerView.Adapter<GameAdapter.ViewHolder>() {
+class GameAdapter(private var context: Context, private var games: ArrayList<Game>) : RecyclerView.Adapter<GameAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
