@@ -1,24 +1,24 @@
 package edu.ucsb.cs.cs184.sportsscores.ui.home
 
-import android.content.Context
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import edu.ucsb.cs.cs184.sportsscores.Game
 import edu.ucsb.cs.cs184.sportsscores.GameAdapter
 import edu.ucsb.cs.cs184.sportsscores.R
 import org.jsoup.Jsoup
+import org.w3c.dom.Text
 import java.io.*
-import java.net.HttpURLConnection
-import java.net.URL
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.concurrent.thread
 
 class nbaFragment : Fragment() {
@@ -35,9 +35,9 @@ class nbaFragment : Fragment() {
     private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         viewModel =
                 ViewModelProvider(this).get(nbaViewModel::class.java)
@@ -62,13 +62,23 @@ class nbaFragment : Fragment() {
 //            val inputStream = FileInputStream(file)
 //            val reader = BufferedReader(InputStreamReader(inputStream))
 //            val htmlString = reader.readText()
-            //val doc = Jsoup.parse(htmlString)
-            val doc = Jsoup.connect("https://www.thescore.com/nba/events/date/2020-12-29").get()
+            //val doc = Jsoup.parse
+
+            val calendar = Calendar.getInstance()
+            val year = String.format("%04d", calendar.get(Calendar.YEAR))
+            val day = String.format("%02d", calendar.get(Calendar.DAY_OF_MONTH))
+            val month = String.format("%02d", calendar.get(Calendar.MONTH) + 1)
+
+            val date = "$year-$month-$day"
+
+            val url = "https://www.thescore.com/nba/events/date/$date"
+            val doc = Jsoup.connect(url).get()
 
             //val imageElements = doc.select("a[name$=nba:scoreboard:team]")
             val imageElements = doc.getElementsByAttributeValueContaining("class", "teamLogo")
             val teamNameElements = doc.getElementsByAttributeValueContaining("class", "teamName")
             val scoresElements = doc.getElementsByAttributeValueContaining("class", "EventCard__score--")
+            val preGameScoresElements = doc.getElementsByAttributeValueContaining("class", "EventCard__pregameScore")
             val timeElements = doc.getElementsByAttributeValueContaining("class", "clockColumn")
             for (index in 0 until imageElements.size / 2) {
                 val homeTeamIndex = index * 2
@@ -81,8 +91,15 @@ class nbaFragment : Fragment() {
                 val awayTeamName = teamNameElements[awayTeamIndex].text()
                 val teamNamePair = Pair(homeTeamName, awayTeamName)
 //                teamNameArrayList.add(Pair(homeTeamName, awayTeamName))
-                val homeTeamScore = scoresElements[homeTeamIndex].text()
-                val awayTeamScore = scoresElements[awayTeamIndex].text()
+                val homeTeamScore: String
+                val awayTeamScore: String
+                if (scoresElements.size > 0) {
+                    homeTeamScore = scoresElements[homeTeamIndex].text()
+                    awayTeamScore = scoresElements[awayTeamIndex].text()
+                } else {
+                    homeTeamScore = preGameScoresElements[homeTeamIndex].text()
+                    awayTeamScore = preGameScoresElements[awayTeamIndex].text()
+                }
                 val teamScorePair = Pair(homeTeamScore, awayTeamScore)
 //                scoresArrayList.add(Pair(homeTeamScore, awayTeamScore))
                 val time = timeElements[index].text()
