@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.ShimmerFrameLayout
 import edu.ucsb.cs.cs184.sportsscores.Game
 import edu.ucsb.cs.cs184.sportsscores.GameAdapter
 import edu.ucsb.cs.cs184.sportsscores.R
@@ -35,6 +36,7 @@ class nbaFragment : Fragment() {
 //    var timeArrayList = ArrayList<String>()
 
     private lateinit var titleTextView: TextView
+    private lateinit var shimmerView: ShimmerFrameLayout
 
     private lateinit var gameAdapter: GameAdapter
     private lateinit var listRecyclerView: RecyclerView
@@ -48,7 +50,7 @@ class nbaFragment : Fragment() {
         viewModel =
                 ViewModelProvider(this).get(nbaViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_nba, container, false)
-
+        shimmerView = root.findViewById(R.id.shimmerView)
         titleTextView = root.findViewById(R.id.dateTextView)
         listRecyclerView = root.findViewById(R.id.listRecyclerView)
 
@@ -56,6 +58,8 @@ class nbaFragment : Fragment() {
     }
 
     private fun retrieveWebInfo() {
+        shimmerView.visibility = View.VISIBLE
+        shimmerView.startShimmer()
         thread {
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
@@ -122,6 +126,8 @@ class nbaFragment : Fragment() {
                 listRecyclerView.layoutManager = linearLayoutManager
                 listRecyclerView.adapter = gameAdapter
                 listRecyclerView.setHasFixedSize(true)
+                shimmerView.visibility = View.GONE
+                shimmerView.stopShimmer()
             }
 
         }
