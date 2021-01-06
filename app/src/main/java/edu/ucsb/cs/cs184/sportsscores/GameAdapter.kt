@@ -59,7 +59,7 @@ class GameAdapter(private var context: Context, private var games: ArrayList<Gam
     }
 
     private fun setScores(holder: ViewHolder, position: Int) {
-        if (!games[position].scores.first.contains("-") && !games[position].scores.first.contains("T")) {
+        if (!games[position].scores.first.contains("-") && !games[position].scores.second.contains("-")) {
             holder.homeTeamScore.text = games[position].scores.first
             holder.awayTeamScore.text = games[position].scores.second
         }
